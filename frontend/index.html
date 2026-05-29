@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Integrated Web Security and Threat Detection System — AI-powered cybersecurity platform for phishing detection, threat monitoring, and password analysis." />
+  <title>CyberShield | Integrated Web Security & Threat Detection</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#home" class="nav-logo">
+        <span class="logo-icon">&#x1F6E1;</span>
+        <span class="logo-text">Cyber<span class="accent">Shield</span></span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link active">Home</a></li>
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="phishing-detector.html"  class="nav-link">URL Checker</a></li>
+        <li><a href="password-analyzer.html" class="nav-link">Password Analyzer</a></li>
+        <li><a href="qr-scanner.html"        class="nav-link">QR Scanner</a></li>
+        <li><a href="dashboard.html"         class="nav-link">Dashboard</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="home">
+    <canvas id="matrixCanvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        Active Threat Intelligence
+      </div>
+      <h1 class="hero-title">
+        Integrated Web Security<br />
+        <span class="gradient-text">&amp; Threat Detection</span>
+      </h1>
+      <p class="hero-subtitle">
+        Powered by <span class="typing-text" id="typingText"></span><span class="cursor">|</span>
+      </p>
+      <p class="hero-desc">
+        A unified AI-driven platform that detects phishing URLs, analyzes password strength,
+        scans QR codes for threats, and monitors your digital environment in real-time.
+      </p>
+      <div class="hero-buttons">
+        <a href="#features" class="btn btn-primary">
+          <span>Explore Features</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="dashboard.html" class="btn btn-secondary">
+          <span>View Dashboard</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-num">99.2%</span>
+          <span class="hero-stat-label">Detection Rate</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">&lt;50ms</span>
+          <span class="hero-stat-label">Response Time</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">6+</span>
+          <span class="hero-stat-label">Security Modules</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll-indicator">
+      <span>Scroll to explore</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-tag">Core Capabilities</span>
+        <h2 class="section-title">Security Features</h2>
+        <p class="section-desc">
+          Six powerful modules working in concert to protect your digital presence
+          against modern cyber threats.
+        </p>
+      </div>
+
+      <div class="features-grid">
+
+        <a href="phishing-detector.html" class="feature-card fade-in feature-card-link" data-delay="0">
+          <div class="card-glow"></div>
+          <div class="feature-icon-wrap" style="--icon-color: #00ff88;">
+            <span class="feature-icon">🔗</span>
+          </div>
+          <h3 class="feature-title">Phishing URL Detection</h3>
+          <p class="feature-desc">
+            AI-powered URL analysis to detect phishing and malicious links in real-time
+            using machine learning models trained on millions of threat samples.
+          </p>
+          <div class="feature-footer">
+            <span class="feature-tag">Machine Learning</span>
+            <span class="feature-tag">Real-time</span>
+            <span class="feature-tag feature-tag-cta">Try it →</span>
+          </div>
+        </a>
+
+        <a href="password-analyzer.html" class="feature-card fade-in feature-card-link" data-delay="100">
+          <div class="card-glow"></div>
+          <div class="feature-icon-wrap" style="--icon-color: #00d4ff;">
+            <span class="feature-icon">🔐</span>
+          </div>
+          <h3 class="feature-title">Password Strength Analyzer</h3>
+          <p class="feature-desc">
+            Evaluate password strength with entropy analysis and breach database checks
+            to ensure your credentials are never compromised.
+          </p>
+          <div class="feature-footer">
+            <span class="feature-tag">Entropy Analysis</span>
+            <span class="feature-tag">HIBP Integration</span>
+            <span class="feature-tag feature-tag-cta" style="--cta-color:#00d4ff;">Try it →</span>
+          </div>
+        </a>
+
+        <a href="qr-scanner.html" class="feature-card fade-in feature-card-link" data-delay="200" style="--hover-color:#7c3aed;">
+          <div class="card-glow"></div>
+          <div class="feature-icon-wrap" style="--icon-color: #7c3aed;">
+            <span class="feature-icon">📷</span>
+          </div>
+          <h3 class="feature-title">QR Threat Detection</h3>
+          <p class="feature-desc">
+            Scan and analyze QR codes for hidden malicious URLs and payloads before
+            they can redirect you to dangerous destinations.
+          </p>
+          <div class="feature-footer">
+            <span class="feature-tag">QR Scanning</span>
+            <span class="feature-tag">Payload Analysis</span>
+            <span class="feature-tag feature-tag-cta" style="background:rgba(124,58,237,.15)!important;color:#a78bfa!important;border-color:rgba(124,58,237,.35)!important;">Try it →</span>
+          </div>
+        </a>
+
+        <div class="feature-card fade-in" data-delay="0">
+          <div class="card-glow"></div>
+          <div class="feature-icon-wrap" style="--icon-color: #f59e0b;">
+            <span class="feature-icon">📡</span>
+          </div>
+          <h3 class="feature-title">Real-time Threat Monitoring</h3>
+          <p class="feature-desc">
+            Continuous monitoring dashboard with live threat intelligence feeds,
+            alerting you the moment suspicious activity is detected.
+          </p>
+          <div class="feature-footer">
+            <span class="feature-tag">Live Feed</span>
+            <span class="feature-tag">Alerts</span>
+          </div>
+        </div>
+
+        <div class="feature-card fade-in" data-delay="100">
+          <div class="card-glow"></div>
+          <div class="feature-icon-wrap" style="--icon-color: #ec4899;">
+            <span class="feature-icon">🧩</span>
+          </div>
+          <h3 class="feature-title">Browser Extension Integration</h3>
+          <p class="feature-desc">
+            Seamless browser extension for on-the-fly security checks while browsing,
+            providing instant warnings without interrupting your workflow.
+          </p>
+          <div class="feature-footer">
+            <span class="feature-tag">Chrome Extension</span>
+            <span class="feature-tag">Passive Scan</span>
+          </div>
+        </div>
+
+        <div class="feature-card fade-in" data-delay="200">
+          <div class="card-glow"></div>
+          <div class="feature-icon-wrap" style="--icon-color: #06b6d4;">
+            <span class="feature-icon">📊</span>
+          </div>
+          <h3 class="feature-title">Security Score Dashboard</h3>
+          <p class="feature-desc">
+            Comprehensive security posture scoring with actionable recommendations
+            to continuously improve your overall security health.
+          </p>
+          <div class="feature-footer">
+            <span class="feature-tag">Scoring</span>
+            <span class="feature-tag">Recommendations</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+
+        <div class="about-text fade-in">
+          <span class="section-tag">About the Project</span>
+          <h2 class="section-title">Built for the Modern Threat Landscape</h2>
+          <p class="about-desc">
+            The Integrated Web Security and Threat Detection System is an open-source
+            cybersecurity platform designed to bring enterprise-grade threat detection
+            to everyone. Combining machine learning, real-time analysis, and an intuitive
+            interface, it empowers users to stay ahead of evolving cyber threats.
+          </p>
+          <p class="about-desc">
+            From detecting sophisticated phishing campaigns to analyzing QR code payloads,
+            every module is engineered for accuracy, speed, and ease of use — whether
+            you're a security professional or a casual user.
+          </p>
+
+          <div class="tech-stack">
+            <h4 class="tech-stack-title">Tech Stack</h4>
+            <div class="tech-badges">
+              <span class="tech-badge" style="--badge-color: #3776ab;">Python</span>
+              <span class="tech-badge" style="--badge-color: #f7931e;">Machine Learning</span>
+              <span class="tech-badge" style="--badge-color: #000000;">Flask</span>
+              <span class="tech-badge" style="--badge-color: #f7df1e; --badge-text: #000;">JavaScript</span>
+              <span class="tech-badge" style="--badge-color: #4285f4;">Chrome Extension</span>
+              <span class="tech-badge" style="--badge-color: #003b57;">SQLite</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-stats fade-in">
+          <div class="stats-grid">
+            <div class="stat-box">
+              <span class="stat-number" data-target="6">0</span>
+              <span class="stat-label">Security Features</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number" data-target="99" data-suffix=".2%">0</span>
+              <span class="stat-label">Detection Accuracy</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number" data-target="0" data-prefix="&lt;" data-suffix="50ms">—</span>
+              <span class="stat-label">Real-time Analysis</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number" data-target="0" data-static="Open">Open</span>
+              <span class="stat-label">Source</span>
+            </div>
+          </div>
+
+          <div class="about-card">
+            <div class="about-card-icon">🛡️</div>
+            <div>
+              <h4>Zero-Trust Architecture</h4>
+              <p>Every request is verified. Every link is analyzed. No assumptions made.</p>
+            </div>
+          </div>
+          <div class="about-card">
+            <div class="about-card-icon">⚡</div>
+            <div>
+              <h4>Sub-50ms Response</h4>
+              <p>Optimized ML inference pipeline delivers results before the page loads.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-tag">Get In Touch</span>
+        <h2 class="section-title">Contact &amp; Contribute</h2>
+        <p class="section-desc">
+          Interested in contributing, reporting a vulnerability, or just want to learn more?
+          Reach out through any of the channels below.
+        </p>
+      </div>
+
+      <div class="contact-grid fade-in">
+        <div class="contact-card">
+          <span class="contact-icon">📧</span>
+          <h4>Email</h4>
+          <p>deepakalmath0@gmail.com</p>
+        </div>
+        <div class="contact-card">
+          <span class="contact-icon">🐙</span>
+          <h4>GitHub</h4>
+          <p>/cybershield</p>
+        </div>
+        <div class="contact-card">
+          <span class="contact-icon">🐛</span>
+          <h4>Bug Reports</h4>
+          <p>Report via GitHub Issues</p>
+        </div>
+        <div class="contact-card">
+          <span class="contact-icon">📖</span>
+          <h4>Documentation</h4>
+          <p>docs.cybershield.dev</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#home" class="nav-logo">
+            <span class="logo-icon">&#x1F6E1;</span>
+            <span class="logo-text">Cyber<span class="accent">Shield</span></span>
+          </a>
+          <p class="footer-tagline">
+            Protecting the web, one request at a time.
+          </p>
+        </div>
+        <div class="footer-links-group">
+          <h5>Platform</h5>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#">API Docs</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-group">
+          <h5>Security</h5>
+          <ul>
+            <li><a href="#">Phishing Detection</a></li>
+            <li><a href="password-analyzer.html">Password Analyzer</a></li>
+            <li><a href="qr-scanner.html">QR Scanner</a></li>
+            <li><a href="#">Threat Monitor</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-group">
+          <h5>Project</h5>
+          <ul>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Contributing</a></li>
+            <li><a href="#">License</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 CyberShield — Integrated Web Security &amp; Threat Detection System. All rights reserved.</p>
+        <p class="footer-note">Built with ❤️ for a safer internet.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== BACK TO TOP ===== -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

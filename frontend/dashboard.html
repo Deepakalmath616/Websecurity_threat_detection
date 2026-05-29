@@ -1,0 +1,557 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CyberShield Security Dashboard — Real-time cybersecurity monitoring, threat analytics, and live scan intelligence." />
+  <title>CyberShield | Security Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">&#x1F6E1;</span>
+        <span class="logo-text">Cyber<span class="accent">Shield</span></span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html"             class="nav-link">Home</a></li>
+        <li><a href="index.html#features"    class="nav-link">Features</a></li>
+        <li><a href="index.html#about"       class="nav-link">About</a></li>
+        <li><a href="phishing-detector.html" class="nav-link">URL Checker</a></li>
+        <li><a href="password-analyzer.html" class="nav-link">Password Analyzer</a></li>
+        <li><a href="qr-scanner.html"        class="nav-link">QR Scanner</a></li>
+        <li><a href="dashboard.html"         class="nav-link active">Dashboard</a></li>
+        <li><a href="index.html#contact"     class="nav-link">Contact</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== PAGE HERO ===== -->
+  <section class="page-hero">
+    <canvas id="miniMatrix"></canvas>
+    <div class="page-hero-content">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        Live Threat Intelligence
+      </div>
+      <h1 class="page-hero-title">
+        Security
+        <span class="gradient-text">Dashboard</span>
+      </h1>
+      <p class="page-hero-desc">
+        Real-time cybersecurity monitoring across all CyberShield modules.
+        Auto-refreshes every 5 seconds.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== DASHBOARD MAIN ===== -->
+  <main class="dashboard-main">
+    <div class="container">
+
+      <!-- ── Threat Alert Banner ── -->
+      <div class="threat-alert-banner" id="threatAlertBanner" hidden>
+        <div class="tab-inner">
+          <span class="tab-icon">🚨</span>
+          <div class="tab-body">
+            <strong class="tab-title">Active Threat Detected</strong>
+            <span class="tab-msg" id="threatAlertMsg">A malicious URL was recently detected.</span>
+          </div>
+          <button class="tab-dismiss" id="threatAlertDismiss" aria-label="Dismiss">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Status Bar ── -->
+      <div class="status-bar" id="statusBar">
+        <div class="status-indicator" id="statusIndicator">
+          <span class="status-dot" id="statusDot"></span>
+          <span class="status-text" id="statusText">Connecting...</span>
+        </div>
+        <div class="status-meta">
+          <span class="status-meta-item">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Last updated: <span id="lastUpdated">—</span>
+          </span>
+          <span class="status-meta-item">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.18-4.96"/>
+            </svg>
+            Auto-refresh: <span class="refresh-badge">5s</span>
+          </span>
+          <span class="status-meta-item" id="newScansBadgeWrap" hidden>
+            <span class="new-scans-badge" id="newScansBadge">+0 new</span>
+          </span>
+          <button class="btn-refresh" id="manualRefreshBtn" title="Refresh now">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.18-4.96"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Stats Cards ── -->
+      <div class="stats-row" id="statsRow">
+        <div class="dash-stat-card fade-in" id="statTotalScans">
+          <div class="dash-stat-icon total">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div class="dash-stat-body">
+            <span class="dash-stat-value" id="statTotalValue">—</span>
+            <span class="dash-stat-label">Total Scans</span>
+          </div>
+          <div class="dash-stat-trend" id="statTotalTrend"></div>
+        </div>
+        <div class="dash-stat-card fade-in" id="statSafeScans">
+          <div class="dash-stat-icon safe">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <div class="dash-stat-body">
+            <span class="dash-stat-value safe" id="statSafeValue">—</span>
+            <span class="dash-stat-label">Safe Scans</span>
+          </div>
+          <div class="dash-stat-bar-wrap">
+            <div class="dash-stat-bar safe" id="statSafeBar"></div>
+          </div>
+        </div>
+        <div class="dash-stat-card fade-in" id="statMaliciousScans">
+          <div class="dash-stat-icon danger">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <div class="dash-stat-body">
+            <span class="dash-stat-value danger" id="statMaliciousValue">—</span>
+            <span class="dash-stat-label">Threats Detected</span>
+          </div>
+          <div class="dash-stat-bar-wrap">
+            <div class="dash-stat-bar danger" id="statMaliciousBar"></div>
+          </div>
+        </div>
+        <div class="dash-stat-card fade-in" id="statAvgScore">
+          <div class="dash-stat-icon score">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="dash-stat-body">
+            <span class="dash-stat-value score" id="statAvgScoreValue">—</span>
+            <span class="dash-stat-label">Avg Security Score</span>
+          </div>
+          <div class="mini-score-ring">
+            <svg viewBox="0 0 40 40" width="40" height="40">
+              <circle class="mini-ring-track" cx="20" cy="20" r="16"/>
+              <circle class="mini-ring-fill" id="miniRingFill" cx="20" cy="20" r="16"
+                stroke-dasharray="100.5" stroke-dashoffset="100.5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Security Score Gauge + Analytics Row ── -->
+      <div class="analytics-row fade-in">
+
+        <!-- Overall Security Score Gauge -->
+        <div class="score-gauge-card" id="scoreGaugeCard">
+          <div class="sgc-header">
+            <span class="sgc-label">Overall Security Score</span>
+            <span class="sgc-badge" id="riskLevelBadge">—</span>
+          </div>
+          <div class="sgc-gauge-wrap">
+            <svg class="sgc-svg" viewBox="0 0 200 120">
+              <!-- Background arc (180 deg semicircle) -->
+              <path class="sgc-track" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="16" stroke-linecap="round"/>
+              <!-- Colored fill arc -->
+              <path class="sgc-fill" id="sgcFill" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="16" stroke-linecap="round"
+                stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
+              <!-- Needle -->
+              <line class="sgc-needle" id="sgcNeedle" x1="100" y1="100" x2="100" y2="28"
+                stroke-width="3" stroke-linecap="round"
+                transform-origin="100 100"/>
+              <circle cx="100" cy="100" r="6" class="sgc-needle-hub"/>
+              <!-- Zone labels -->
+              <text x="18"  y="118" class="sgc-zone-label" fill="#ef4444">High</text>
+              <text x="88"  y="22"  class="sgc-zone-label" fill="#f59e0b">Med</text>
+              <text x="162" y="118" class="sgc-zone-label" fill="#00ff88">Low</text>
+            </svg>
+            <div class="sgc-score-display">
+              <span class="sgc-score-num" id="sgcScoreNum">—</span>
+              <span class="sgc-score-unit">/100</span>
+            </div>
+          </div>
+          <div class="sgc-risk-label" id="sgcRiskLabel">Calculating...</div>
+          <div class="sgc-zones">
+            <span class="sgc-zone danger">0-39 High Risk</span>
+            <span class="sgc-zone warn">40-69 Medium Risk</span>
+            <span class="sgc-zone safe">70-100 Low Risk</span>
+          </div>
+        </div>
+
+        <!-- Threat Distribution Chart -->
+        <div class="analytics-card" id="threatDistCard">
+          <div class="ac-header">
+            <span class="ac-icon">🎯</span>
+            <h3 class="ac-title">Threat Distribution</h3>
+          </div>
+          <div class="threat-dist-chart" id="threatDistChart">
+            <div class="tdc-empty">No threat data yet</div>
+          </div>
+        </div>
+
+        <!-- Safe vs Malicious Donut -->
+        <div class="analytics-card" id="safeVsMalCard">
+          <div class="ac-header">
+            <span class="ac-icon">📊</span>
+            <h3 class="ac-title">Safe vs Threats</h3>
+          </div>
+          <div class="donut-wrap">
+            <svg class="donut-svg" viewBox="0 0 120 120" width="120" height="120">
+              <circle class="donut-track" cx="60" cy="60" r="46"/>
+              <circle class="donut-safe"  id="donutSafe"  cx="60" cy="60" r="46"
+                stroke-dasharray="289" stroke-dashoffset="289"
+                transform="rotate(-90 60 60)"/>
+              <circle class="donut-threat" id="donutThreat" cx="60" cy="60" r="46"
+                stroke-dasharray="289" stroke-dashoffset="289"
+                transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="donut-center">
+              <span class="donut-pct" id="donutSafePct">—%</span>
+              <span class="donut-lbl">Safe</span>
+            </div>
+          </div>
+          <div class="donut-legend">
+            <span class="dl-item safe"><span class="dl-dot safe"></span>Safe</span>
+            <span class="dl-item danger"><span class="dl-dot danger"></span>Threats</span>
+          </div>
+        </div>
+
+        <!-- Source Breakdown -->
+        <div class="analytics-card" id="sourceBreakCard">
+          <div class="ac-header">
+            <span class="ac-icon">🌐</span>
+            <h3 class="ac-title">Scan Sources</h3>
+          </div>
+          <div class="source-bars" id="sourceBars">
+            <div class="tdc-empty">No data yet</div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /analytics-row -->
+
+      <!-- ── Live Activity Feed + Scan Timeline ── -->
+      <div class="live-row fade-in">
+
+        <!-- Live Activity Feed -->
+        <div class="live-feed-card" id="liveFeedCard">
+          <div class="lfc-header">
+            <div class="lfc-title-wrap">
+              <span class="live-dot-anim"></span>
+              <h3 class="lfc-title">Live Activity Feed</h3>
+            </div>
+            <span class="lfc-count" id="liveFeedCount">0 events</span>
+          </div>
+          <div class="lfc-body" id="liveFeedBody">
+            <div class="dash-empty-state">
+              <span class="dash-empty-icon">📡</span>
+              <p>Waiting for activity...</p>
+              <span>Scans will appear here in real-time</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scan Timeline -->
+        <div class="timeline-card" id="timelineCard">
+          <div class="tc-header">
+            <span class="tc-icon">⏱️</span>
+            <h3 class="tc-title">Scan Timeline</h3>
+          </div>
+          <div class="tc-body" id="timelineBody">
+            <div class="dash-empty-state">
+              <span class="dash-empty-icon">🕐</span>
+              <p>No timeline data yet</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /live-row -->
+
+      <!-- ── Main Content Grid (threats + safe panels) ── -->
+      <div class="dashboard-grid">
+        <div class="dash-panel fade-in" id="threatsPanel">
+          <div class="dash-panel-header">
+            <div class="dash-panel-title-wrap">
+              <span class="dash-panel-icon danger">🚨</span>
+              <h2 class="dash-panel-title">Latest Detected Threats</h2>
+            </div>
+            <span class="dash-panel-count danger" id="threatsPanelCount">0</span>
+          </div>
+          <div class="dash-panel-body" id="threatsList">
+            <div class="dash-empty-state" id="threatsEmpty">
+              <span class="dash-empty-icon">🛡️</span>
+              <p>No threats detected yet</p>
+              <span>Scan some URLs to see results here</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-panel fade-in" id="safePanel">
+          <div class="dash-panel-header">
+            <div class="dash-panel-title-wrap">
+              <span class="dash-panel-icon safe">✅</span>
+              <h2 class="dash-panel-title">Latest Safe Scans</h2>
+            </div>
+            <span class="dash-panel-count safe" id="safePanelCount">0</span>
+          </div>
+          <div class="dash-panel-body" id="safeList">
+            <div class="dash-empty-state" id="safeEmpty">
+              <span class="dash-empty-icon">🔍</span>
+              <p>No safe scans yet</p>
+              <span>Scan some URLs to see results here</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Extension Activity Panel ── -->
+      <div class="extension-section fade-in" id="extensionSection">
+        <div class="ext-section-header">
+          <div class="ext-title-wrap">
+            <span class="ext-icon">🧩</span>
+            <h2 class="ext-title">Browser Extension Activity</h2>
+          </div>
+          <span class="ext-total-badge" id="extTotalBadge">0 extension scans</span>
+        </div>
+        <div class="ext-grid">
+          <!-- Extension Threats -->
+          <div class="ext-panel danger" id="extThreatsPanel">
+            <div class="ext-panel-header">
+              <span>🚨 Extension Threats</span>
+              <span class="ext-panel-count danger" id="extThreatCount">0</span>
+            </div>
+            <div class="ext-panel-body" id="extThreatList">
+              <div class="dash-empty-state">
+                <span class="dash-empty-icon" style="font-size:1.4rem">🛡️</span>
+                <p>No extension threats</p>
+              </div>
+            </div>
+          </div>
+          <!-- Extension Safe -->
+          <div class="ext-panel safe" id="extSafePanel">
+            <div class="ext-panel-header">
+              <span>✅ Extension Safe Scans</span>
+              <span class="ext-panel-count safe" id="extSafeCount">0</span>
+            </div>
+            <div class="ext-panel-body" id="extSafeList">
+              <div class="dash-empty-state">
+                <span class="dash-empty-icon" style="font-size:1.4rem">🔍</span>
+                <p>No extension safe scans</p>
+              </div>
+            </div>
+          </div>
+          <!-- Browser Threat Alerts -->
+          <div class="ext-panel warn" id="extAlertsPanel">
+            <div class="ext-panel-header">
+              <span>⚠️ Browser Threat Alerts</span>
+              <span class="ext-panel-count warn" id="extAlertCount">0</span>
+            </div>
+            <div class="ext-panel-body" id="extAlertList">
+              <div class="dash-empty-state">
+                <span class="dash-empty-icon" style="font-size:1.4rem">📡</span>
+                <p>No browser alerts</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Security Recommendations ── -->
+      <div class="recommendations-section fade-in" id="recommendationsSection">
+        <div class="rec-header">
+          <span class="rec-icon">💡</span>
+          <h2 class="rec-title">Security Recommendations</h2>
+        </div>
+        <div class="rec-grid" id="recGrid">
+          <!-- injected by JS -->
+        </div>
+      </div>
+
+      <!-- ── Full History Table ── -->
+      <div class="history-section fade-in">
+        <div class="history-header">
+          <div class="history-title-wrap">
+            <h2 class="history-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+              Full Scan History
+            </h2>
+            <span class="history-total" id="historyTotal">0 records</span>
+          </div>
+          <div class="history-controls">
+            <div class="history-filter-wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+              </svg>
+              <select class="history-filter" id="sourceFilter" aria-label="Filter by source">
+                <option value="">All Sources</option>
+                <option value="website">Website</option>
+                <option value="chrome_extension">Extension</option>
+                <option value="qr_scanner">QR Scanner</option>
+                <option value="api">API</option>
+              </select>
+            </div>
+            <div class="history-filter-wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              </svg>
+              <select class="history-filter" id="statusFilter" aria-label="Filter by status">
+                <option value="">All Statuses</option>
+                <option value="safe">Safe Only</option>
+                <option value="threat">Threats Only</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="history-table-wrap">
+          <table class="history-table" id="historyTable">
+            <thead>
+              <tr>
+                <th>URL</th><th>Status</th><th>Threat Type</th>
+                <th>Score</th><th>Source</th><th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+          <div class="table-loading" id="tableLoading">
+            <div class="skeleton-row" aria-hidden="true"><div class="sk sk-url"></div><div class="sk sk-status"></div><div class="sk sk-type"></div><div class="sk sk-score"></div><div class="sk sk-source"></div><div class="sk sk-time"></div></div>
+            <div class="skeleton-row" aria-hidden="true"><div class="sk sk-url"></div><div class="sk sk-status"></div><div class="sk sk-type"></div><div class="sk sk-score"></div><div class="sk sk-source"></div><div class="sk sk-time"></div></div>
+            <div class="skeleton-row" aria-hidden="true"><div class="sk sk-url"></div><div class="sk sk-status"></div><div class="sk sk-type"></div><div class="sk sk-score"></div><div class="sk sk-source"></div><div class="sk sk-time"></div></div>
+            <div class="skeleton-row" aria-hidden="true"><div class="sk sk-url"></div><div class="sk sk-status"></div><div class="sk sk-type"></div><div class="sk sk-score"></div><div class="sk sk-source"></div><div class="sk sk-time"></div></div>
+            <div class="skeleton-row" aria-hidden="true"><div class="sk sk-url"></div><div class="sk sk-status"></div><div class="sk sk-type"></div><div class="sk sk-score"></div><div class="sk sk-source"></div><div class="sk sk-time"></div></div>
+          </div>
+          <div class="table-empty" id="tableEmpty" hidden>
+            <span class="dash-empty-icon">📋</span>
+            <p>No scan records found</p>
+            <span>Start scanning URLs to populate the history</span>
+          </div>
+          <div class="table-error" id="tableError" hidden>
+            <span class="dash-empty-icon">📡</span>
+            <p id="tableErrorMsg">Could not connect to backend</p>
+            <span>Make sure Flask is running on <code>http://127.0.0.1:5000</code></span>
+          </div>
+        </div>
+        <div class="pagination" id="pagination" hidden>
+          <button class="page-btn" id="prevPageBtn" disabled>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Prev
+          </button>
+          <span class="page-info" id="pageInfo">Page 1</span>
+          <button class="page-btn" id="nextPageBtn">
+            Next
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Quick Actions ── -->
+      <div class="quick-actions fade-in">
+        <h3 class="quick-actions-title">Quick Actions</h3>
+        <div class="quick-actions-grid">
+          <a href="phishing-detector.html" class="quick-action-card">
+            <span class="qa-icon">🔗</span><span class="qa-label">Check URL</span>
+          </a>
+          <a href="password-analyzer.html" class="quick-action-card">
+            <span class="qa-icon">🔐</span><span class="qa-label">Analyze Password</span>
+          </a>
+          <a href="qr-scanner.html" class="quick-action-card">
+            <span class="qa-icon">📷</span><span class="qa-label">Scan QR Code</span>
+          </a>
+          <button class="quick-action-card" id="exportCsvBtn">
+            <span class="qa-icon">📥</span><span class="qa-label">Export CSV</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-icon">&#x1F6E1;</span>
+            <span class="logo-text">Cyber<span class="accent">Shield</span></span>
+          </a>
+          <p class="footer-tagline">Protecting the web, one request at a time.</p>
+        </div>
+        <div class="footer-links-group">
+          <h5>Platform</h5>
+          <ul>
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#">API Docs</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-group">
+          <h5>Security Tools</h5>
+          <ul>
+            <li><a href="phishing-detector.html">Phishing Detector</a></li>
+            <li><a href="password-analyzer.html">Password Analyzer</a></li>
+            <li><a href="qr-scanner.html">QR Scanner</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-group">
+          <h5>Project</h5>
+          <ul>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Contributing</a></li>
+            <li><a href="#">License</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 CyberShield — Integrated Web Security &amp; Threat Detection System. All rights reserved.</p>
+        <p class="footer-note">Built with &#x2764;&#xfe0f; for a safer internet.</p>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+
+  <script src="js/main.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

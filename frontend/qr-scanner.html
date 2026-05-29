@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CyberShield QR Threat Detection — Scan QR codes for hidden malicious URLs and payloads before they can harm you." />
+  <title>CyberShield | QR Threat Detection</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/qr-scanner.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">&#x1F6E1;</span>
+        <span class="logo-text">Cyber<span class="accent">Shield</span></span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html"             class="nav-link">Home</a></li>
+        <li><a href="index.html#features"    class="nav-link">Features</a></li>
+        <li><a href="index.html#about"       class="nav-link">About</a></li>
+        <li><a href="phishing-detector.html" class="nav-link">URL Checker</a></li>
+        <li><a href="password-analyzer.html" class="nav-link">Password Analyzer</a></li>
+        <li><a href="qr-scanner.html"        class="nav-link active">QR Scanner</a></li>
+        <li><a href="dashboard.html"         class="nav-link">Dashboard</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== PAGE HERO ===== -->
+  <section class="page-hero">
+    <canvas id="miniMatrix"></canvas>
+    <div class="page-hero-content">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        QR Payload Analysis
+      </div>
+      <h1 class="page-hero-title">
+        QR Code Threat
+        <span class="gradient-text">Detection</span>
+      </h1>
+      <p class="page-hero-desc">
+        Upload or drag-and-drop a QR code image. We decode the payload, extract any
+        embedded URLs, and run them through our threat intelligence engine instantly.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== MAIN SCANNER ===== -->
+  <main class="scanner-main">
+    <div class="container">
+
+      <!-- ── Upload Card ── -->
+      <div class="scanner-card fade-in" id="uploadCard">
+        <div class="scanner-card-header">
+          <div class="scanner-card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="3" height="3"/>
+              <rect x="18" y="14" width="3" height="3"/>
+              <rect x="14" y="18" width="3" height="3"/>
+              <rect x="18" y="18" width="3" height="3"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="scanner-card-title">QR Code Scanner</h2>
+            <p class="scanner-card-subtitle">Upload a QR code image to decode and analyze its content</p>
+          </div>
+        </div>
+
+        <!-- Drop zone -->
+        <div class="drop-zone" id="dropZone" role="button" tabindex="0"
+             aria-label="Upload QR code image — click or drag and drop">
+          <input type="file" id="fileInput" accept="image/*" hidden aria-hidden="true" />
+
+          <!-- Idle state -->
+          <div class="drop-idle" id="dropIdle">
+            <div class="drop-icon-wrap">
+              <svg class="drop-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="3" height="3"/>
+                <rect x="18" y="14" width="3" height="3"/>
+                <rect x="14" y="18" width="3" height="3"/>
+                <rect x="18" y="18" width="3" height="3"/>
+              </svg>
+              <div class="drop-scan-line"></div>
+            </div>
+            <p class="drop-title">Drop your QR code here</p>
+            <p class="drop-subtitle">or <span class="drop-link">click to browse</span></p>
+            <p class="drop-hint">Supports PNG, JPG, GIF, WebP, BMP</p>
+          </div>
+
+          <!-- Drag-over state (shown via JS class) -->
+          <div class="drop-over-msg" id="dropOverMsg" hidden>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p>Release to scan</p>
+          </div>
+
+          <!-- Preview state -->
+          <div class="drop-preview" id="dropPreview" hidden>
+            <img id="previewImg" src="" alt="QR code preview" class="preview-img" />
+            <div class="preview-overlay">
+              <div class="preview-scan-line"></div>
+            </div>
+            <button type="button" class="preview-remove" id="previewRemove" aria-label="Remove image">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- File info row -->
+        <div class="file-info-row" id="fileInfoRow" hidden>
+          <span class="file-info-icon">🖼️</span>
+          <span class="file-info-name" id="fileInfoName">—</span>
+          <span class="file-info-size" id="fileInfoSize">—</span>
+        </div>
+
+        <!-- Error message -->
+        <p class="upload-error" id="uploadError" role="alert" aria-live="polite"></p>
+
+        <!-- Actions -->
+        <div class="scanner-actions">
+          <button type="button" class="btn btn-primary btn-scan-qr" id="scanQrBtn" disabled>
+            <span class="btn-text">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              Scan QR Code
+            </span>
+            <span class="btn-loading" aria-hidden="true">
+              <span class="spinner"></span>
+              Decoding...
+            </span>
+          </button>
+          <button type="button" class="btn btn-ghost" id="resetBtn" hidden>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1 4 1 10 7 10"/>
+              <path d="M3.51 15a9 9 0 1 0 .49-4.5"/>
+            </svg>
+            Scan Another
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Decode Loader ── -->
+      <div class="decode-loader" id="decodeLoader" hidden aria-live="polite">
+        <div class="loader-card">
+          <div class="loader-radar">
+            <div class="radar-ring r1"></div>
+            <div class="radar-ring r2"></div>
+            <div class="radar-ring r3"></div>
+            <div class="radar-sweep qr-sweep"></div>
+            <div class="radar-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+              </svg>
+            </div>
+          </div>
+          <div class="loader-text">
+            <h3 class="loader-title">Analyzing QR Code</h3>
+            <p class="loader-step" id="loaderStep">Decoding QR payload...</p>
+          </div>
+          <div class="loader-progress">
+            <div class="loader-bar" id="loaderBar"></div>
+          </div>
+          <div class="loader-checks">
+            <div class="loader-check" id="lc1"><span class="lc-icon pending">○</span><span>QR code decoding</span></div>
+            <div class="loader-check" id="lc2"><span class="lc-icon pending">○</span><span>Payload extraction</span></div>
+            <div class="loader-check" id="lc3"><span class="lc-icon pending">○</span><span>URL detection</span></div>
+            <div class="loader-check" id="lc4"><span class="lc-icon pending">○</span><span>Threat intelligence lookup</span></div>
+            <div class="loader-check" id="lc5"><span class="lc-icon pending">○</span><span>Security score generation</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Results Section ── -->
+      <div class="results-section" id="resultsSection" hidden>
+
+        <!-- QR Content Card -->
+        <div class="qr-content-card fade-in" id="qrContentCard">
+          <div class="result-card-header">
+            <span class="result-card-icon">📋</span>
+            <h3 class="result-card-title">Decoded QR Content</h3>
+            <span class="qr-type-badge" id="qrTypeBadge">—</span>
+          </div>
+          <div class="qr-content-body">
+            <code class="qr-raw-content" id="qrRawContent">—</code>
+          </div>
+          <div class="qr-content-actions">
+            <button type="button" class="btn-icon" id="copyContentBtn" title="Copy content">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Copy
+            </button>
+          </div>
+        </div>
+
+        <!-- URL Threat Results (shown only when content is a URL) -->
+        <div id="urlThreatSection" hidden>
+
+          <!-- Verdict Banner -->
+          <div class="verdict-banner fade-in" id="verdictBanner">
+            <div class="verdict-icon-wrap" id="verdictIconWrap"></div>
+            <div class="verdict-text">
+              <h2 class="verdict-title" id="verdictTitle">—</h2>
+              <p class="verdict-subtitle" id="verdictSubtitle">—</p>
+            </div>
+            <div class="verdict-score-wrap">
+              <div class="verdict-score-ring">
+                <svg class="score-svg" viewBox="0 0 80 80">
+                  <circle class="score-track" cx="40" cy="40" r="32"/>
+                  <circle class="score-fill" id="scoreFill" cx="40" cy="40" r="32"
+                    stroke-dasharray="201" stroke-dashoffset="201"/>
+                </svg>
+                <div class="score-label">
+                  <span class="score-number" id="scoreNumber">0</span>
+                  <span class="score-unit">/100</span>
+                </div>
+              </div>
+              <p class="score-caption">Security Score</p>
+            </div>
+          </div>
+
+          <!-- Detail Cards -->
+          <div class="result-details-grid">
+
+            <!-- Threat Status -->
+            <div class="result-card fade-in" id="threatStatusCard">
+              <div class="result-card-header">
+                <span class="result-card-icon">🎯</span>
+                <h3 class="result-card-title">Threat Status</h3>
+              </div>
+              <div class="threat-status-body">
+                <div class="threat-level-bar-wrap">
+                  <div class="threat-level-labels">
+                    <span>Safe</span><span>Suspicious</span><span>Dangerous</span>
+                  </div>
+                  <div class="threat-level-track">
+                    <div class="threat-level-fill" id="threatLevelFill"></div>
+                    <div class="threat-level-thumb" id="threatLevelThumb"></div>
+                  </div>
+                </div>
+                <div class="threat-indicators" id="threatIndicators"></div>
+              </div>
+            </div>
+
+            <!-- Analysis Details -->
+            <div class="result-card fade-in" id="threatExplanationCard">
+              <div class="result-card-header">
+                <span class="result-card-icon">🔍</span>
+                <h3 class="result-card-title">Analysis Details</h3>
+              </div>
+              <p class="explanation-text" id="explanationText">—</p>
+              <div class="explanation-flags" id="explanationFlags"></div>
+            </div>
+
+            <!-- URL Breakdown -->
+            <div class="result-card fade-in" id="urlBreakdownCard">
+              <div class="result-card-header">
+                <span class="result-card-icon">🔗</span>
+                <h3 class="result-card-title">URL Breakdown</h3>
+              </div>
+              <div class="url-breakdown" id="urlBreakdown"></div>
+            </div>
+
+          </div>
+
+          <!-- Recommendations -->
+          <div class="recommendations-card fade-in" id="recommendationsCard">
+            <div class="result-card-header">
+              <span class="result-card-icon">💡</span>
+              <h3 class="result-card-title">Recommendations</h3>
+            </div>
+            <ul class="recommendations-list" id="recommendationsList"></ul>
+          </div>
+
+        </div>
+        <!-- /urlThreatSection -->
+
+        <!-- Non-URL content info card -->
+        <div class="non-url-card fade-in" id="nonUrlCard" hidden>
+          <div class="result-card-header">
+            <span class="result-card-icon">ℹ️</span>
+            <h3 class="result-card-title">Content Analysis</h3>
+          </div>
+          <p class="non-url-text" id="nonUrlText">—</p>
+        </div>
+
+        <!-- Result Actions -->
+        <div class="result-actions fade-in">
+          <button class="btn btn-primary" id="scanAnotherBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            Scan Another QR
+          </button>
+          <button class="btn btn-secondary" id="copyReportBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy Report
+          </button>
+        </div>
+
+      </div>
+      <!-- /resultsSection -->
+
+    </div>
+  </main>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-tag">Under the Hood</span>
+        <h2 class="section-title">How QR Scanning Works</h2>
+        <p class="section-desc">
+          Four stages of analysis decode your QR code and assess any embedded threats
+          entirely within your browser.
+        </p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card fade-in" data-delay="0">
+          <div class="step-number">01</div>
+          <div class="step-icon">🖼️</div>
+          <h3>Image Decode</h3>
+          <p>The QR image is rendered to a canvas and decoded using the jsQR library — no server upload required.</p>
+        </div>
+        <div class="step-card fade-in" data-delay="100">
+          <div class="step-number">02</div>
+          <div class="step-icon">📦</div>
+          <h3>Payload Extraction</h3>
+          <p>The raw QR payload is extracted and classified — URL, plain text, contact card, Wi-Fi config, and more.</p>
+        </div>
+        <div class="step-card fade-in" data-delay="200">
+          <div class="step-number">03</div>
+          <div class="step-icon">🌐</div>
+          <h3>URL Threat Check</h3>
+          <p>If the payload contains a URL, it is sent to the Google Safe Browsing API for real-time threat analysis.</p>
+        </div>
+        <div class="step-card fade-in" data-delay="300">
+          <div class="step-number">04</div>
+          <div class="step-icon">📊</div>
+          <h3>Score &amp; Report</h3>
+          <p>All signals are combined into a security score with a full breakdown and actionable recommendations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-icon">&#x1F6E1;</span>
+            <span class="logo-text">Cyber<span class="accent">Shield</span></span>
+          </a>
+          <p class="footer-tagline">Protecting the web, one request at a time.</p>
+        </div>
+        <div class="footer-links-group">
+          <h5>Platform</h5>
+          <ul>
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">API Docs</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-group">
+          <h5>Security Tools</h5>
+          <ul>
+            <li><a href="phishing-detector.html">Phishing Detector</a></li>
+            <li><a href="password-analyzer.html">Password Analyzer</a></li>
+            <li><a href="qr-scanner.html">QR Scanner</a></li>
+            <li><a href="#">Threat Monitor</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-group">
+          <h5>Project</h5>
+          <ul>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Contributing</a></li>
+            <li><a href="#">License</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 CyberShield — Integrated Web Security &amp; Threat Detection System. All rights reserved.</p>
+        <p class="footer-note">Built with ❤️ for a safer internet.</p>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+
+  <!-- jsQR — MIT licensed QR decoder, loaded from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/qr-scanner.js"></script>
+</body>
+</html>

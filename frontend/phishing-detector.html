@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CyberShield Phishing URL Detector — AI-powered real-time analysis to identify malicious and phishing URLs instantly." />
+  <title>CyberShield | Phishing URL Detector</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/phishing-detector.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">&#x1F6E1;</span>
+        <span class="logo-text">Cyber<span class="accent">Shield</span></span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#features" class="nav-link">Features</a></li>
+        <li><a href="index.html#about" class="nav-link">About</a></li>
+        <li><a href="phishing-detector.html" class="nav-link active">URL Checker</a></li>
+        <li><a href="password-analyzer.html" class="nav-link">Password Analyzer</a></li>
+        <li><a href="qr-scanner.html"        class="nav-link">QR Scanner</a></li>
+        <li><a href="dashboard.html"         class="nav-link">Dashboard</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== PAGE HERO ===== -->
+  <section class="page-hero">
+    <canvas id="miniMatrix"></canvas>
+    <div class="page-hero-content">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        AI-Powered Analysis
+      </div>
+      <h1 class="page-hero-title">
+        Phishing URL
+        <span class="gradient-text">Detector</span>
+      </h1>
+      <p class="page-hero-desc">
+        Paste any URL below and our machine learning engine will analyze it for phishing
+        indicators, malicious patterns, and threat signatures in real-time.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== MAIN CHECKER ===== -->
+  <main class="checker-main">
+    <div class="container">
+
+      <!-- URL Input Card -->
+      <div class="checker-card fade-in">
+        <div class="checker-card-header">
+          <div class="checker-card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="checker-card-title">URL Analysis</h2>
+            <p class="checker-card-subtitle">Enter a URL to scan for phishing and malicious content</p>
+          </div>
+        </div>
+
+        <form class="url-form" id="urlForm" novalidate>
+          <div class="input-group" id="inputGroup">
+            <div class="input-prefix">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+            </div>
+            <input
+              type="url"
+              id="urlInput"
+              class="url-input"
+              placeholder="https://example.com/suspicious-page"
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="URL to analyze"
+            />
+            <button type="button" class="input-clear" id="clearBtn" aria-label="Clear input" title="Clear">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <p class="input-error" id="inputError" role="alert" aria-live="polite"></p>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-scan" id="scanBtn">
+              <span class="btn-text">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Scan URL
+              </span>
+              <span class="btn-loading" aria-hidden="true">
+                <span class="spinner"></span>
+                Analyzing...
+              </span>
+            </button>
+            <button type="button" class="btn btn-ghost" id="demoBtn">
+              Try Demo URLs
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <!-- Demo URL Dropdown -->
+        <div class="demo-panel" id="demoPanel" hidden>
+          <p class="demo-panel-label">Select a demo URL to test:</p>
+          <div class="demo-urls">
+            <button class="demo-url-btn safe" data-url="https://www.google.com">
+              <span class="demo-dot safe"></span>
+              https://www.google.com
+              <span class="demo-label">Safe</span>
+            </button>
+            <button class="demo-url-btn safe" data-url="https://github.com/cybershield">
+              <span class="demo-dot safe"></span>
+              https://github.com/cybershield
+              <span class="demo-label">Safe</span>
+            </button>
+            <button class="demo-url-btn suspicious" data-url="http://paypa1-secure-login.tk/verify">
+              <span class="demo-dot suspicious"></span>
+              http://paypa1-secure-login.tk/verify
+              <span class="demo-label">Suspicious</span>
+            </button>
+            <button class="demo-url-btn danger" data-url="http://192.168.1.1/bank-login/update-credentials.php">
+              <span class="demo-dot danger"></span>
+              http://192.168.1.1/bank-login/update-credentials.php
+              <span class="demo-label">Phishing</span>
+            </button>
+            <button class="demo-url-btn danger" data-url="http://amaz0n-account-suspended.xyz/login?redirect=payment">
+              <span class="demo-dot danger"></span>
+              http://amaz0n-account-suspended.xyz/login
+              <span class="demo-label">Phishing</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== LOADING STATE ===== -->
+      <div class="analysis-loader" id="analysisLoader" hidden aria-live="polite">
+        <div class="loader-card">
+          <div class="loader-radar">
+            <div class="radar-ring r1"></div>
+            <div class="radar-ring r2"></div>
+            <div class="radar-ring r3"></div>
+            <div class="radar-sweep"></div>
+            <div class="radar-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="loader-text">
+            <h3 class="loader-title">Analyzing URL</h3>
+            <p class="loader-step" id="loaderStep">Initializing threat scanner...</p>
+          </div>
+          <div class="loader-progress">
+            <div class="loader-bar" id="loaderBar"></div>
+          </div>
+          <div class="loader-checks" id="loaderChecks">
+            <div class="loader-check" id="lc1">
+              <span class="lc-icon pending">○</span>
+              <span>Domain reputation check</span>
+            </div>
+            <div class="loader-check" id="lc2">
+              <span class="lc-icon pending">○</span>
+              <span>SSL certificate validation</span>
+            </div>
+            <div class="loader-check" id="lc3">
+              <span class="lc-icon pending">○</span>
+              <span>Phishing pattern analysis</span>
+            </div>
+            <div class="loader-check" id="lc4">
+              <span class="lc-icon pending">○</span>
+              <span>Blacklist database lookup</span>
+            </div>
+            <div class="loader-check" id="lc5">
+              <span class="lc-icon pending">○</span>
+              <span>ML threat classification</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== RESULTS SECTION ===== -->
+      <div class="results-section" id="resultsSection" hidden>
+
+        <!-- Verdict Banner -->
+        <div class="verdict-banner fade-in" id="verdictBanner">
+          <div class="verdict-icon-wrap" id="verdictIconWrap">
+            <!-- injected by JS -->
+          </div>
+          <div class="verdict-text">
+            <h2 class="verdict-title" id="verdictTitle">—</h2>
+            <p class="verdict-subtitle" id="verdictSubtitle">—</p>
+          </div>
+          <div class="verdict-score-wrap">
+            <div class="verdict-score-ring" id="scoreRing">
+              <svg class="score-svg" viewBox="0 0 80 80">
+                <circle class="score-track" cx="40" cy="40" r="32"/>
+                <circle class="score-fill" id="scoreFill" cx="40" cy="40" r="32"
+                  stroke-dasharray="201" stroke-dashoffset="201"/>
+              </svg>
+              <div class="score-label">
+                <span class="score-number" id="scoreNumber">0</span>
+                <span class="score-unit">/100</span>
+              </div>
+            </div>
+            <p class="score-caption" id="scoreCaption">Security Score</p>
+          </div>
+        </div>
+
+        <!-- Detail Cards Row -->
+        <div class="result-details-grid">
+
+          <!-- Threat Status -->
+          <div class="result-card fade-in" id="threatStatusCard">
+            <div class="result-card-header">
+              <span class="result-card-icon">🎯</span>
+              <h3 class="result-card-title">Threat Status</h3>
+            </div>
+            <div class="threat-status-body">
+              <div class="threat-level-bar-wrap">
+                <div class="threat-level-labels">
+                  <span>Safe</span><span>Suspicious</span><span>Dangerous</span>
+                </div>
+                <div class="threat-level-track">
+                  <div class="threat-level-fill" id="threatLevelFill"></div>
+                  <div class="threat-level-thumb" id="threatLevelThumb"></div>
+                </div>
+              </div>
+              <div class="threat-indicators" id="threatIndicators">
+                <!-- injected by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Threat Explanation -->
+          <div class="result-card fade-in" id="threatExplanationCard">
+            <div class="result-card-header">
+              <span class="result-card-icon">🔍</span>
+              <h3 class="result-card-title">Analysis Details</h3>
+            </div>
+            <p class="explanation-text" id="explanationText">—</p>
+            <div class="explanation-flags" id="explanationFlags">
+              <!-- injected by JS -->
+            </div>
+          </div>
+
+          <!-- URL Breakdown -->
+          <div class="result-card fade-in" id="urlBreakdownCard">
+            <div class="result-card-header">
+              <span class="result-card-icon">🔗</span>
+              <h3 class="result-card-title">URL Breakdown</h3>
+            </div>
+            <div class="url-breakdown" id="urlBreakdown">
+              <!-- injected by JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Recommendations -->
+        <div class="recommendations-card fade-in" id="recommendationsCard">
+          <div class="result-card-header">
+            <span class="result-card-icon">💡</span>
+            <h3 class="result-card-title">Recommendations</h3>
+          </div>
+          <ul class="recommendations-list" id="recommendationsList">
+            <!-- injected by JS -->
+          </ul>
+        </div>
+
+        <!-- Actions -->
+        <div class="result-actions fade-in">
+          <button class="btn btn-primary" id="scanAnotherBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Scan Another URL
+          </button>
+          <button class="btn btn-secondary" id="copyReportBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy Report
+          </button>
+        </div>
+
+      </div>
+      <!-- /results -->
+
+    </div>
+  </main>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-tag">Under the Hood</span>
+        <h2 class="section-title">How Detection Works</h2>
+        <p class="section-desc">
+          Our multi-layer analysis pipeline examines every aspect of a URL
+          to deliver accurate threat assessments.
+        </p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card fade-in" data-delay="0">
+          <div class="step-number">01</div>
+          <div class="step-icon">🔎</div>
+          <h3>URL Parsing</h3>
+          <p>The URL is decomposed into protocol, domain, path, and parameters for granular inspection.</p>
+        </div>
+        <div class="step-card fade-in" data-delay="100">
+          <div class="step-number">02</div>
+          <div class="step-icon">🌐</div>
+          <h3>Domain Analysis</h3>
+          <p>Domain age, WHOIS data, and reputation scores are cross-referenced against threat databases.</p>
+        </div>
+        <div class="step-card fade-in" data-delay="200">
+          <div class="step-number">03</div>
+          <div class="step-icon">🤖</div>
+          <h3>ML Classification</h3>
+          <p>A trained machine learning model scores the URL against millions of known phishing patterns.</p>
+        </div>
+        <div class="step-card fade-in" data-delay="300">
+          <div class="step-number">04</div>
+          <div class="step-icon">📊</div>
+          <h3>Score Generation</h3>
+          <p>All signals are aggregated into a final security score with a detailed threat breakdown.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-icon">&#x1F6E1;</span>
+            <span class="logo-text">Cyber<span class="accent">Shield</span></span>
+          </a>
+          <p class="footer-tagline">Protecting the web, one request at a time.</p>
+        </div>
+        <div class="footer-links-group">
+          <h5>Platform</h5>
+          <ul>
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">API Docs</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-group">
+          <h5>Security Tools</h5>
+          <ul>
+            <li><a href="phishing-detector.html">Phishing Detector</a></li>
+            <li><a href="password-analyzer.html">Password Analyzer</a></li>
+            <li><a href="qr-scanner.html">QR Scanner</a></li>
+            <li><a href="#">Threat Monitor</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-group">
+          <h5>Project</h5>
+          <ul>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Contributing</a></li>
+            <li><a href="#">License</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 CyberShield — Integrated Web Security &amp; Threat Detection System. All rights reserved.</p>
+        <p class="footer-note">Built with ❤️ for a safer internet.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+
+  <script src="js/main.js"></script>
+  <script src="js/phishing-detector.js"></script>
+</body>
+</html>

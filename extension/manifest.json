@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Web Threat Detector",
+  "version": "1.0.0",
+  "description": "Detects web threats and malicious downloads in real-time.",
+
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "downloads"
+  ],
+
+  "host_permissions": [
+    "<all_urls>"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Web Threat Detector"
+  }
+}
